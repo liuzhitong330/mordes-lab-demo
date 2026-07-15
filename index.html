@@ -17,8 +17,8 @@ body{background:var(--bg);color:var(--text);line-height:1.75}
 
 #id-banner{background:#dde8f3;text-align:center;padding:7px 16px;font-family:-apple-system,sans-serif;font-size:0.78rem;color:#445;border-bottom:1px solid #b8cde0;}
 
-header{background:#0b2035;color:#e8f0fa;padding:52px 40px 44px;border-bottom:3px solid #1a3a5c;}
-header h1{font-size:clamp(1.35rem,2.8vw,1.95rem);font-weight:normal;line-height:1.35;max-width:830px}
+header{background:#0b2035;color:#e8f0fa;padding:52px 40px 44px;border-bottom:3px solid #1a3a5c;text-align:center;}
+header h1{font-size:clamp(1.35rem,2.8vw,1.95rem);font-weight:normal;line-height:1.35;max-width:830px;margin:0 auto;}
 header .byline{margin-top:14px;font-family:-apple-system,sans-serif;font-size:0.78rem;color:#7a9cc0}
 header .byline span{color:#a8c8e8}
 
@@ -206,9 +206,19 @@ yl.textContent='log₂FC E696K mut vs Control'; g0.appendChild(yl);
 const tip=document.getElementById('tooltip');
 const ttT=document.getElementById('tt-title'), ttB=document.getElementById('tt-body');
 
-// Points
+// Only label these specific key genes
+const KEY_LABELS = new Set([
+  'MT-CO1','MT-RNR1','MT-TC','MT-TE','MT-TY',
+  'TMEM173',
+  'SV2B','SNAP25','GRIA1','NRGN',
+  'BNIP3L','TOMM20','LAMP1','CTSB',
+  'STMN2','TARDBP',
+  'SST','PTN','PAPPA2'
+]);
+
+// Points — exclude "other" category entirely for clarity
 const dotGroups={};
-const CATS=['mito','sting','autophagy','synapse','als','other'];
+const CATS=['mito','sting','autophagy','synapse','als'];
 CATS.forEach(cat=>{ dotGroups[cat]=el('g'); sc.appendChild(dotGroups[cat]); });
 
 let activeFilter=null;
@@ -216,34 +226,32 @@ let activeFilter=null;
 function renderDots(){
   CATS.forEach(cat=>{ while(dotGroups[cat].firstChild) dotGroups[cat].removeChild(dotGroups[cat].firstChild); });
 
-  // Sort: other first, then by priority
-  const order=['other','autophagy','synapse','als','sting','mito'];
-  const sorted=[...SCATTER].sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
+  const order=['autophagy','synapse','als','sting','mito'];
+  const sorted=SCATTER.filter(d=>d.cat!=='other').sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
 
   sorted.forEach(d=>{
     const visible = !activeFilter || d.cat===activeFilter;
     const x=sx(d.ko), y=sy(d.mut);
     if(x<PAD.l-4||x>W-PAD.r+4||y<PAD.t-4||y>H-PAD.b+4) return;
 
-    const c=el('circle',{cx:x,cy:y,r:d.cat==='other'?2.5:4,
+    const c=el('circle',{cx:x,cy:y,r:5,
       fill:visible?CAT_COLOR[d.cat]:'#ddd',
-      opacity:visible?(d.cat==='other'?0.4:0.82):0.2,
-      'stroke':visible&&d.cat!=='other'?'rgba(0,0,0,.15)':'none','stroke-width':'0.5',
+      opacity:visible?0.88:0.2,
+      stroke:visible?'rgba(0,0,0,.18)':'none','stroke-width':'0.6',
       cursor:'pointer'});
 
     c.addEventListener('mousemove',e=>{
       ttT.textContent=d.gene;
-      ttB.textContent=`KO: ${d.ko>0?'+':''}${d.ko} · MUT: ${d.mut>0?'+':''}${d.mut} · Category: ${CAT_LABEL[d.cat]}`;
+      ttB.textContent=`KO: ${d.ko>0?'+':''}${d.ko} · MUT: ${d.mut>0?'+':''}${d.mut} · ${CAT_LABEL[d.cat]}`;
       tip.style.display='block';
       tip.style.left=(e.clientX+14)+'px'; tip.style.top=(e.clientY-10)+'px';
     });
     c.addEventListener('mouseleave',()=>tip.style.display='none');
     dotGroups[d.cat].appendChild(c);
 
-    // Labels for important genes
-    if(visible && d.label && d.cat!=='other'){
-      const lx=x+5, ly=y-4;
-      const lt=el('text',{x:lx,y:ly,fill:CAT_COLOR[d.cat],'font-family':'-apple-system,sans-serif','font-size':'8.5','font-weight':'600','pointer-events':'none'});
+    if(visible && KEY_LABELS.has(d.gene)){
+      const lx=x+7, ly=y+4;
+      const lt=el('text',{x:lx,y:ly,fill:CAT_COLOR[d.cat],'font-family':'-apple-system,sans-serif','font-size':'9','font-weight':'700','pointer-events':'none'});
       lt.textContent=d.gene;
       dotGroups[d.cat].appendChild(lt);
     }
@@ -254,7 +262,7 @@ renderDots();
 // Legend + filter
 const legendEl=document.getElementById('legend');
 const filterRow=document.getElementById('filter-row');
-CATS.forEach(cat=>{
+['mito','sting','autophagy','synapse','als'].forEach(cat=>{
   const li=document.createElement('div');
   li.className='legend-item'; li.dataset.cat=cat;
   li.innerHTML=`<div class="legend-dot" style="background:${CAT_COLOR[cat]}"></div>${CAT_LABEL[cat]}`;
