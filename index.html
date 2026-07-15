@@ -3,61 +3,70 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TBK1 and the Autophagy Network in ALS — Mordes Lab Demo</title>
+<title>TBK1 Loss and the Mitochondrial Cascade in ALS Neurons — Mordes Lab Demo</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0e1621; --surface:#16202e; --border:#1f3044;
-  --text:#d4e4f4; --muted:#6a8aa8; --accent:#4fa3d4;
-  --red:#e05c5c; --blue:#4fa3d4; --orange:#e8a44a; --purple:#9b7fd4; --green:#4db88c;
-  font-family:'Georgia',serif;
+  --bg:#f9f7f3; --surface:#fff; --border:#e0dbd0;
+  --text:#1a1a1a; --muted:#777; --accent:#1a5276;
+  --red:#c0392b; --blue:#1a5276; --orange:#e67e22;
+  --green:#1a7a4a; --purple:#6c3483; --gray:#aaa;
+  font-family:'Georgia','Times New Roman',serif;
 }
-body{background:var(--bg);color:var(--text);line-height:1.7}
+body{background:var(--bg);color:var(--text);line-height:1.75}
 
-/* IDENTITY BANNER */
-#id-banner{background:#e8f0f8;text-align:center;padding:7px 16px;font-family:-apple-system,sans-serif;font-size:0.78rem;color:#445;border-bottom:1px solid #c8d8e8;}
+#id-banner{background:#dde8f3;text-align:center;padding:7px 16px;font-family:-apple-system,sans-serif;font-size:0.78rem;color:#445;border-bottom:1px solid #b8cde0;}
 
-header{background:linear-gradient(135deg,#0d1f33 0%,#1a3a5c 100%);padding:52px 40px 42px;border-bottom:2px solid var(--border);}
-header h1{font-size:clamp(1.4rem,3vw,2rem);font-weight:normal;color:#e8f4ff;line-height:1.3;max-width:820px}
-header .byline{margin-top:12px;font-family:-apple-system,sans-serif;font-size:0.8rem;color:var(--muted)}
-header .byline span{color:var(--accent)}
+header{background:#0b2035;color:#e8f0fa;padding:52px 40px 44px;border-bottom:3px solid #1a3a5c;}
+header h1{font-size:clamp(1.35rem,2.8vw,1.95rem);font-weight:normal;line-height:1.35;max-width:830px}
+header .byline{margin-top:14px;font-family:-apple-system,sans-serif;font-size:0.78rem;color:#7a9cc0}
+header .byline span{color:#a8c8e8}
 
-article{max-width:860px;margin:0 auto;padding:48px 32px}
-h2{font-size:1.25rem;color:var(--accent);margin:44px 0 14px;border-bottom:1px solid var(--border);padding-bottom:8px}
-p{margin-bottom:1.1em;color:#b8cfe0}
-strong{color:var(--text)}
-em{color:var(--orange);font-style:normal}
+article{max-width:860px;margin:0 auto;padding:50px 32px}
+h2{font-size:1.2rem;color:var(--accent);margin:44px 0 14px;border-bottom:1px solid var(--border);padding-bottom:8px;font-style:italic}
+p{margin-bottom:1.15em;color:#222}
+strong{color:#000}
+em.highlight{color:var(--orange);font-style:normal;font-weight:600}
 
-.fig-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin:28px 0}
-.fig-label{font-family:-apple-system,sans-serif;font-size:0.75rem;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
+.fig-box{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:22px 24px;margin:26px 0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.fig-label{font-family:-apple-system,sans-serif;font-size:0.73rem;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:.07em}
+.fig-caption{font-family:-apple-system,sans-serif;font-size:0.8rem;color:#555;margin-top:14px;line-height:1.5}
 
 /* TOOLTIP */
-#tooltip{position:fixed;pointer-events:none;background:#0a131e;border:1px solid var(--accent);border-radius:6px;padding:10px 14px;font-family:-apple-system,sans-serif;font-size:0.78rem;color:var(--text);max-width:260px;z-index:1000;display:none;line-height:1.5}
-#tt-title{font-weight:600;color:var(--accent);margin-bottom:4px}
-#tt-body{color:#b8cfe0}
+#tooltip{position:fixed;pointer-events:none;background:#0b1e30;border:1px solid #3a6ea8;border-radius:5px;padding:9px 13px;font-family:-apple-system,sans-serif;font-size:0.76rem;color:#d8e8f8;max-width:240px;z-index:1000;display:none;line-height:1.5}
+#tt-title{font-weight:700;color:#a8d0f0;margin-bottom:3px}
 
-/* NETWORK SVG */
-#net-svg{width:100%;overflow:visible}
+/* SCATTER */
+#scatter-svg{width:100%;max-width:740px;display:block;margin:0 auto;cursor:crosshair}
+
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:14px;font-family:-apple-system,sans-serif;font-size:0.76rem}
+.legend-item{display:flex;align-items:center;gap:6px;cursor:pointer;opacity:1;transition:opacity .15s}
+.legend-item.dimmed{opacity:.35}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+
+/* FILTER BTNS */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.fbtn{background:transparent;border:1px solid var(--border);border-radius:3px;padding:4px 11px;font-family:-apple-system,sans-serif;font-size:0.75rem;cursor:pointer;color:var(--muted)}
+.fbtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
 /* HEATMAP */
 .hm-wrap{overflow-x:auto}
-table.heatmap{border-collapse:collapse;font-family:-apple-system,sans-serif;font-size:0.75rem;min-width:540px;width:100%}
-table.heatmap th{padding:6px 10px;color:var(--muted);font-weight:normal;text-align:center}
-table.heatmap th.gene-col{text-align:right;padding-right:12px;color:var(--text);font-weight:600}
-table.heatmap td{padding:5px 8px;text-align:center;border:1px solid #0e1621;cursor:default;transition:outline .1s}
+table.heatmap{border-collapse:collapse;font-family:-apple-system,sans-serif;font-size:0.76rem;min-width:540px;width:100%}
+table.heatmap th{padding:6px 10px;color:var(--muted);font-weight:normal;text-align:center;border-bottom:1px solid var(--border)}
+table.heatmap td{padding:5px 8px;text-align:center;border:1px solid #f0ece6;cursor:default}
 table.heatmap td:hover{outline:2px solid var(--accent)}
-table.heatmap tr td:first-child{text-align:right;padding-right:12px;font-weight:600;color:var(--text);background:var(--surface);border:none;white-space:nowrap}
+table.heatmap tr td:first-child{text-align:right;padding-right:12px;font-weight:700;color:#1a1a1a;background:var(--surface);border:none;border-right:1px solid var(--border);white-space:nowrap}
 
-.query-bar{margin-top:22px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.query-bar input{background:#0e1b28;border:1px solid var(--border);border-radius:4px;padding:7px 12px;color:var(--text);font-family:-apple-system,sans-serif;font-size:0.82rem;width:160px}
-.query-bar button{background:var(--accent);color:#071220;border:none;border-radius:4px;padding:7px 16px;font-family:-apple-system,sans-serif;font-size:0.82rem;cursor:pointer;font-weight:600}
-.query-bar button:hover{background:#6eb8e4}
-#query-status{font-family:-apple-system,sans-serif;font-size:0.78rem;color:var(--muted)}
+.query-bar{margin-top:18px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.query-bar input{background:#faf9f7;border:1px solid var(--border);border-radius:4px;padding:7px 12px;color:var(--text);font-family:-apple-system,sans-serif;font-size:0.82rem;width:160px}
+.query-bar button{background:var(--accent);color:#fff;border:none;border-radius:4px;padding:7px 16px;font-family:-apple-system,sans-serif;font-size:0.82rem;cursor:pointer}
+.query-bar button:hover{background:#1c638e}
+#query-status{font-family:-apple-system,sans-serif;font-size:0.77rem;color:var(--muted)}
 #query-status.error{color:var(--red)}
 
-cite{font-style:italic;color:var(--muted);font-size:0.85em}
-footer{background:#0d2137;color:#8ab4d4;text-align:center;padding:18px 24px;font-family:-apple-system,sans-serif;font-size:0.78rem;margin-top:40px}
-footer a{color:#e8c26a}
+footer{background:#0b2035;color:#6a8aaa;text-align:center;padding:18px 24px;font-family:-apple-system,sans-serif;font-size:0.78rem;margin-top:40px}
+footer a{color:#c8a84a}
 </style>
 </head>
 <body>
@@ -66,36 +75,45 @@ footer a{color:#e8c26a}
 <div id="tooltip"><div id="tt-title"></div><div id="tt-body"></div></div>
 
 <header>
-  <h1>When One Kinase Falls:<br>TBK1 as the Master Conductor of Neuronal Autophagy in ALS</h1>
-  <p class="byline">Interactive demo · <span>Mordes Lab, UCSF</span> · Data: Smeyers &amp; Mordes, Cell Reports 2025 + Allen Brain Atlas ISH</p>
+  <h1>When Mitophagy Fails:<br>TBK1 Loss Triggers a Mitochondrial Cascade and Synaptic Collapse in Human Neurons</h1>
+  <p class="byline">Interactive demo · <span>Mordes Lab, UCSF</span> · Data: GEO GSE308008 (Smeyers &amp; Mordes, Cell Reports 2025) + Allen Brain Atlas ISH</p>
 </header>
 
 <article>
 
-<p>Amyotrophic lateral sclerosis is defined by one paradox: motor neurons — among the largest, most metabolically active cells in the body — are selectively destroyed, while neighboring cell types survive. One clue lies in the gene <strong>TBK1</strong>. Haploinsufficiency of TBK1 causes familial ALS, and TBK1 variants are found in sporadic cases too. But <em>why</em> does losing half of one kinase kill a motor neuron?</p>
+<p>Why do motor neurons die in ALS? One answer lies in TBK1, a kinase whose haploinsufficiency is sufficient to cause familial ALS and FTD. The Mordes lab recently mapped TBK1's phosphorylation targets in human iPSC-derived neurons with unprecedented depth — 66,278 phosphopeptides — revealing that TBK1 coordinates five cargo receptors, two autophagy initiation factors, and the late-endosomal GTPase RAB7A simultaneously. Lose TBK1, and all of these collapse at once.</p>
 
-<p>The Mordes lab recently answered this with unusual precision. Using deep phosphoproteomics in iPSC-derived excitatory neurons — quantifying <strong>66,278 phosphopeptides across 8,196 proteins</strong> — they showed that TBK1 doesn't target a single pathway. It phosphorylates a coordinated network: five selective autophagy cargo receptors (SQSTM1/p62, OPTN, NDP52, NBR1, TAX1BP1), two autophagy initiation factors (FIP200, ATG9A), and the late-endosomal GTPase RAB7A. Lose TBK1, and all of these collapse simultaneously.</p>
+<p>But the phosphoproteomics tells us <em>what TBK1 phosphorylates</em>, not what neurons do in response. The companion RNA-seq dataset (GEO <strong>GSE308008</strong>, 24 samples across six isogenic genotypes) reveals the transcriptional aftermath — and it points to a cascade that begins with mitochondria and ends at the synapse.</p>
 
-<h2>Figure 1 — The TBK1 Phosphorylation Network</h2>
+<h2>Figure 1 — The Transcriptional Response to TBK1 Loss in Human Neurons</h2>
+
+<p>Each dot below is a gene expressed in iPSC-derived excitatory neurons. The x-axis shows its log₂ fold-change in complete TBK1 knockout (KO); the y-axis shows the same in E696K homozygous mutant neurons (the ALS-causing mutation). Genes that move the same way in both conditions lie near the diagonal. Genes that diverge — moving in KO but not the mutation — reveal processes selectively sensitive to total TBK1 loss.</p>
 
 <div class="fig-box">
-  <div class="fig-label">Hover nodes for phosphosite and function · Data: Smeyers &amp; Mordes, Cell Reports 2025 (ProteomeXchange PXD068150)</div>
-  <svg id="net-svg" viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg"></svg>
+  <div class="fig-label">483 expressed genes · log₂FC vs control · GEO GSE308008 · hover to identify · click legend to filter</div>
+  <div class="filter-row" id="filter-row"></div>
+  <svg id="scatter-svg" viewBox="0 0 600 480" xmlns="http://www.w3.org/2000/svg"></svg>
+  <div class="legend" id="legend"></div>
+  <p class="fig-caption">Mito = mitochondria-encoded transcripts; Autophagy = lysosomal/selective autophagy genes; Synapse = presynaptic vesicle and receptor genes; STING = innate immune/cGAS-STING pathway; ALS = ALS-linked genes.</p>
 </div>
 
-<p>The network reveals a striking architecture: TBK1 operates on <strong>three distinct layers of autophagy</strong> simultaneously. At the recognition layer, it phosphorylates all five major cargo receptors — ensuring that misfolded proteins and damaged organelles get flagged. At the initiation layer, TBK1 phosphorylates FIP200 (pS1286) and ATG9A (pS755), the proteins that nucleate the autophagosome membrane. And at the trafficking layer, it phosphorylates RAB7A (pS72) to keep late endosomes moving toward lysosomes. Losing TBK1 is not a partial impairment — it is a <em>simultaneous collapse</em> of recognition, initiation, and delivery.</p>
+<p>The most striking pattern: <em class="highlight">every mitochondria-encoded transcript is substantially upregulated</em> in both TBK1 KO and E696K mutant neurons (top-right cluster). MT-CO1, MT-CO2, MT-CYB, MT-ND1-5, and multiple mitochondrial tRNAs all rise 0.5–1.1 log₂FC. At the same time, the nuclear-encoded mitochondrial import protein TOMM20 falls (−0.37), and the mitophagy receptors BNIP3L (−0.29) and BNIP3 (−0.19) decrease. Together this signals accumulation of damaged mitochondria that can no longer be cleared.</p>
 
-<h2>Figure 2 — Regional Expression: Why Motor Neurons?</h2>
+<p>One consequence: when mitophagy fails and damaged mitochondria accumulate, mitochondrial DNA and RNA leak into the cytoplasm — a pattern known to activate the cGAS-STING innate immune pathway. In our data, <strong>TMEM173 (STING) is among the most upregulated non-mitochondrial genes</strong> in TBK1 KO neurons (+0.89 log₂FC), with a smaller but consistent rise in E696K mutants (+0.73). This may explain why TBK1 loss does not merely impair autophagy — it triggers a neuroimmune response within the neuron itself.</p>
 
-<p>The phosphoproteomics tells us what TBK1 does. The Allen Mouse Brain Atlas tells us <em>where</em> it matters most. If motor neurons are uniquely vulnerable to TBK1 loss, we would expect TBK1 and its key effectors to be highest in motor-circuit regions — and lowest in regions spared by ALS.</p>
+<p>Meanwhile, synaptic vesicle genes collapse (bottom-left). SV2B falls −1.14 log₂FC, SNAP25 −0.50, SV2A −0.48, GRIA1 (AMPA receptor subunit) −0.48. The ALS biomarker STMN2 — whose cryptic splicing is a hallmark of TDP-43 pathology — is mildly reduced (−0.11), consistent with early proteostatic stress in these neurons.</p>
+
+<h2>Figure 2 — Regional Expression: Which Brain Regions Depend Most on These Genes?</h2>
+
+<p>The RNA-seq shows what changes when TBK1 is lost. The Allen Mouse Brain Atlas ISH tells us where these genes are expressed at highest levels — and therefore which regions face the highest demand on TBK1-dependent processes.</p>
 
 <div class="fig-box">
-  <div class="fig-label">Expression density (Allen ISH) · hover cell for value · live query below</div>
+  <div class="fig-label">Expression density (Allen ISH) · hover cell for value · query additional genes below</div>
   <div class="hm-wrap">
     <table class="heatmap" id="hm-table">
       <thead>
         <tr>
-          <th class="gene-col">Gene</th>
+          <th style="text-align:right">Gene</th>
           <th>Hipp</th><th>EC</th><th>PFC</th><th>SSp</th>
           <th>MOp</th><th>Thal</th><th>Str</th><th>Cereb</th>
         </tr>
@@ -104,17 +122,16 @@ footer a{color:#e8c26a}
     </table>
   </div>
   <div class="query-bar">
-    <input id="gene-input" type="text" placeholder="e.g. Optineurin">
+    <input id="gene-input" type="text" placeholder="e.g. Tomm20">
     <button onclick="queryGene()">Add gene</button>
     <span id="query-status"></span>
   </div>
+  <p class="fig-caption">Sv2b = synaptic vesicle glycoprotein 2B (most downregulated synapse gene); Snap25 = presynaptic SNARE; Stmn2 = ALS biomarker stathmin-2; Bnip3l = mitophagy receptor NIX; Tmem173 = STING.</p>
 </div>
 
-<p>The pattern is unambiguous. <strong>Motor cortex (MOp) has the highest TBK1 expression</strong> of any region (0.039), and also the highest ATG9A (0.039) — the two autophagy nodes most co-enriched in motor tissue. Cerebellum, the region largely spared in ALS, has the lowest expression of both (0.009 each). FIP200/Rb1cc1 follows the same gradient: MOp &gt; Hipp &gt; Cereb.</p>
+<p>The pattern is striking: <strong>Sv2b is highest in motor cortex (MOp: 0.147) and somatosensory cortex (SSp: 0.139)</strong>, and lowest in cerebellum (0.020) — precisely tracking ALS vulnerability versus sparing. Motor neurons that most depend on SV2B-mediated synaptic vesicle cycling are the same cells that lose SV2B transcription when TBK1 fails. Similarly, SNAP25 is enriched in MOp (0.188) and PFC (0.199). STMN2 peaks in MOp (0.153), consistent with its established role as a motor axon health marker.</p>
 
-<p>This is not a coincidence of proximity — it is a dependency signature. Motor neurons run TBK1-dependent autophagy at the highest throughput of any region examined. When a TBK1 mutation cuts that flux in half, it is precisely the cells with the highest autophagic demand that cannot compensate. SQSTM1 (p62) is broadly expressed (0.10–0.18 across regions), consistent with its role as a universal cargo receptor; but its phosphorylation at S361/S366 — and therefore its function — depends entirely on TBK1 activity that is highest in MOp.</p>
-
-<p>An open question the Mordes lab is positioned to answer: does the <em>ratio</em> of TBK1 to p62 predict regional vulnerability? MOp has relatively lower p62 (0.16) but very high TBK1 (0.039) — suggesting the cargo receptor is not the bottleneck, but the kinase is. Regions with the same p62 level but lower TBK1 (Str: p62 0.146, TBK1 0.014) may clear cargo through TBK1-independent mechanisms, explaining their sparing.</p>
+<p>BNIP3L (the mitophagy receptor NIX, downregulated in TBK1 KO) is moderately expressed throughout (EC: 0.038, MOp: 0.023), suggesting that mitophagy dependence is widespread — but its loss in high-demand motor neurons may be especially consequential. An open question: are TBK1 haploinsufficient motor neurons already running at the edge of their mitophagy capacity, such that a 50% reduction in kinase activity crosses a threshold that neighboring cell types can tolerate?</p>
 
 </article>
 
@@ -123,210 +140,206 @@ footer a{color:#e8c26a}
 </footer>
 
 <script>
-// ── NETWORK DIAGRAM ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// SCATTER DATA — computed from GEO GSE308008 normalized counts
+// ══════════════════════════════════════════════════════════════
+const SCATTER = [{"gene":"MT-CO1","ko":0.818,"mut":0.896,"ctrl":4618.8,"cat":"mito","label":true},{"gene":"MT-RNR2","ko":0.693,"mut":0.686,"ctrl":3458.2,"cat":"mito","label":true},{"gene":"MT-CO2","ko":0.605,"mut":0.625,"ctrl":2818.9,"cat":"mito","label":true},{"gene":"MT-CO3","ko":0.699,"mut":0.698,"ctrl":2592.3,"cat":"mito","label":true},{"gene":"MT-ND4","ko":0.462,"mut":0.448,"ctrl":2740.0,"cat":"mito","label":true},{"gene":"MT-ATP6","ko":0.64,"mut":0.633,"ctrl":1883.0,"cat":"mito","label":true},{"gene":"MT-TN","ko":0.812,"mut":0.8,"ctrl":1437.3,"cat":"mito","label":true},{"gene":"MT-ND5","ko":0.738,"mut":0.767,"ctrl":1287.0,"cat":"mito","label":true},{"gene":"MT-RNR1","ko":0.908,"mut":0.82,"ctrl":1145.1,"cat":"mito","label":true},{"gene":"MT-ND2","ko":0.476,"mut":0.434,"ctrl":1415.2,"cat":"mito","label":true},{"gene":"MT-ND1","ko":0.545,"mut":0.578,"ctrl":1269.9,"cat":"mito","label":true},{"gene":"MT-TC","ko":1.076,"mut":1.029,"ctrl":837.6,"cat":"mito","label":true},{"gene":"MT-CYB","ko":0.659,"mut":0.714,"ctrl":1055.0,"cat":"mito","label":true},{"gene":"STMN2","ko":-0.109,"mut":-0.043,"ctrl":1197.8,"cat":"als","label":true},{"gene":"MT-ND3","ko":0.501,"mut":0.478,"ctrl":560.4,"cat":"mito","label":true},{"gene":"MT-TY","ko":1.305,"mut":1.241,"ctrl":150.9,"cat":"mito","label":true},{"gene":"MT-TL1","ko":1.12,"mut":1.246,"ctrl":47.9,"cat":"mito","label":true},{"gene":"MT-TV","ko":1.246,"mut":1.665,"ctrl":6.8,"cat":"mito","label":true},{"gene":"MT-TE","ko":1.39,"mut":1.615,"ctrl":18.4,"cat":"mito","label":true},{"gene":"VAMP2","ko":-0.227,"mut":-0.365,"ctrl":203.9,"cat":"synapse","label":true},{"gene":"SNAP25","ko":-0.499,"mut":-0.602,"ctrl":191.8,"cat":"synapse","label":true},{"gene":"TOMM20","ko":-0.37,"mut":-0.324,"ctrl":139.6,"cat":"autophagy","label":true},{"gene":"SYP","ko":-0.115,"mut":-0.233,"ctrl":115.1,"cat":"synapse","label":true},{"gene":"SYT1","ko":-0.301,"mut":-0.434,"ctrl":115.9,"cat":"synapse","label":true},{"gene":"SV2A","ko":-0.482,"mut":-0.69,"ctrl":124.7,"cat":"synapse","label":true},{"gene":"SOD1","ko":0.048,"mut":0.075,"ctrl":63.7,"cat":"als","label":true},{"gene":"VCP","ko":-0.187,"mut":-0.294,"ctrl":71.7,"cat":"autophagy","label":true},{"gene":"STXBP1","ko":-0.015,"mut":-0.119,"ctrl":58.7,"cat":"synapse","label":true},{"gene":"DCTN1","ko":-0.166,"mut":-0.329,"ctrl":53.7,"cat":"autophagy","label":true},{"gene":"UBQLN2","ko":-0.198,"mut":-0.318,"ctrl":44.8,"cat":"autophagy","label":true},{"gene":"CTSB","ko":-0.224,"mut":-0.357,"ctrl":44.2,"cat":"autophagy","label":true},{"gene":"BNIP3L","ko":-0.288,"mut":-0.269,"ctrl":37.8,"cat":"autophagy","label":true},{"gene":"LAMP1","ko":-0.269,"mut":-0.35,"ctrl":38.4,"cat":"autophagy","label":true},{"gene":"FUS","ko":0.021,"mut":-0.044,"ctrl":25.0,"cat":"als","label":true},{"gene":"OPTN","ko":-0.153,"mut":-0.092,"ctrl":29.2,"cat":"autophagy","label":true},{"gene":"LAMP2","ko":-0.242,"mut":-0.248,"ctrl":22.3,"cat":"autophagy","label":true},{"gene":"CTSD","ko":-0.165,"mut":-0.27,"ctrl":18.8,"cat":"autophagy","label":true},{"gene":"RB1CC1","ko":-0.118,"mut":-0.048,"ctrl":17.8,"cat":"autophagy","label":true},{"gene":"GRIA1","ko":-0.48,"mut":-0.738,"ctrl":19.8,"cat":"synapse","label":true},{"gene":"NRGN","ko":1.301,"mut":1.446,"ctrl":5.4,"cat":"synapse","label":true},{"gene":"NBR1","ko":-0.314,"mut":-0.343,"ctrl":15.9,"cat":"autophagy","label":true},{"gene":"PINK1","ko":0.002,"mut":-0.13,"ctrl":13.4,"cat":"autophagy","label":true},{"gene":"TARDBP","ko":0.043,"mut":0.023,"ctrl":12.5,"cat":"als","label":true},{"gene":"CTSL","ko":-0.313,"mut":-0.22,"ctrl":14.3,"cat":"autophagy","label":true},{"gene":"BSN","ko":-0.077,"mut":-0.12,"ctrl":12.6,"cat":"synapse","label":true},{"gene":"BNIP3","ko":-0.194,"mut":-0.161,"ctrl":15.4,"cat":"autophagy","label":true},{"gene":"ATG9A","ko":-0.198,"mut":-0.385,"ctrl":12.7,"cat":"autophagy","label":true},{"gene":"C9orf72","ko":0.21,"mut":0.291,"ctrl":9.6,"cat":"als","label":true},{"gene":"SV2B","ko":-1.144,"mut":-1.384,"ctrl":8.3,"cat":"synapse","label":true},{"gene":"SQSTM1","ko":0.01,"mut":-0.105,"ctrl":7.8,"cat":"autophagy","label":true},{"gene":"TMEM173","ko":0.892,"mut":0.734,"ctrl":5.7,"cat":"sting","label":true},{"gene":"MAVS","ko":0.102,"mut":0.066,"ctrl":6.1,"cat":"sting","label":true},{"gene":"SST","ko":-1.747,"mut":-1.797,"ctrl":43.1,"cat":"other","label":true},{"gene":"PAPPA2","ko":-2.152,"mut":-3.276,"ctrl":20.0,"cat":"other","label":true},{"gene":"HMX1","ko":-1.933,"mut":-3.265,"ctrl":62.1,"cat":"other","label":true},{"gene":"PTN","ko":-1.141,"mut":-1.38,"ctrl":155.4,"cat":"other","label":true},{"gene":"DDIT3","ko":-0.614,"mut":-0.34,"ctrl":17.0,"cat":"other","label":true},{"gene":"SERP2","ko":0.437,"mut":0.461,"ctrl":6.1,"cat":"other","label":false},{"gene":"STAT3","ko":-0.061,"mut":-0.152,"ctrl":42.8,"cat":"other","label":false},{"gene":"SRP14","ko":0.026,"mut":0.108,"ctrl":102.8,"cat":"other","label":false},{"gene":"DVL2","ko":0.111,"mut":0.019,"ctrl":6.8,"cat":"other","label":false},{"gene":"TSPAN18","ko":-0.286,"mut":-0.474,"ctrl":24.3,"cat":"other","label":false},{"gene":"MRPL14","ko":0.148,"mut":0.103,"ctrl":19.1,"cat":"other","label":false},{"gene":"PBX1","ko":-0.341,"mut":-0.479,"ctrl":30.2,"cat":"other","label":false},{"gene":"RPL38","ko":0.051,"mut":0.079,"ctrl":30.8,"cat":"other","label":false},{"gene":"MPPED2","ko":-0.026,"mut":0.097,"ctrl":6.6,"cat":"other","label":false},{"gene":"ABCA3","ko":-0.16,"mut":-0.317,"ctrl":48.6,"cat":"other","label":false},{"gene":"VPS54","ko":-0.215,"mut":-0.2,"ctrl":9.1,"cat":"other","label":false},{"gene":"SPIRE1","ko":-0.065,"mut":-0.189,"ctrl":7.5,"cat":"other","label":false},{"gene":"SPEN","ko":-0.005,"mut":-0.05,"ctrl":10.4,"cat":"other","label":false},{"gene":"RPL23A","ko":-0.089,"mut":-0.007,"ctrl":47.9,"cat":"other","label":false},{"gene":"CSPG5","ko":0.156,"mut":0.119,"ctrl":8.3,"cat":"other","label":false},{"gene":"RABGGTB","ko":-0.309,"mut":-0.21,"ctrl":15.2,"cat":"other","label":false},{"gene":"CADM4","ko":-0.048,"mut":-0.18,"ctrl":99.2,"cat":"other","label":false},{"gene":"HMGCR","ko":-0.116,"mut":-0.065,"ctrl":101.3,"cat":"other","label":false},{"gene":"HNRNPH2","ko":-0.061,"mut":-0.184,"ctrl":47.9,"cat":"other","label":false},{"gene":"IARS2","ko":-0.12,"mut":-0.143,"ctrl":25.8,"cat":"other","label":false},{"gene":"RCC2","ko":-0.148,"mut":-0.238,"ctrl":26.0,"cat":"other","label":false},{"gene":"PPM1K","ko":-0.204,"mut":-0.224,"ctrl":12.3,"cat":"other","label":false},{"gene":"LTBP4","ko":0.016,"mut":0.005,"ctrl":8.8,"cat":"other","label":false},{"gene":"RPS3","ko":-0.121,"mut":-0.228,"ctrl":107.5,"cat":"other","label":false},{"gene":"DFFA","ko":-0.036,"mut":-0.082,"ctrl":10.3,"cat":"other","label":false},{"gene":"ETV4","ko":-0.276,"mut":-0.543,"ctrl":31.7,"cat":"other","label":false},{"gene":"FAM3A","ko":0.076,"mut":-0.077,"ctrl":7.2,"cat":"other","label":false},{"gene":"UPF3A","ko":0.121,"mut":0.248,"ctrl":7.4,"cat":"other","label":false},{"gene":"HIP1R","ko":0.232,"mut":0.391,"ctrl":10.7,"cat":"other","label":false},{"gene":"PHOX2A","ko":0.219,"mut":0.222,"ctrl":18.1,"cat":"other","label":false},{"gene":"NOL7","ko":-0.14,"mut":-0.154,"ctrl":20.5,"cat":"other","label":false},{"gene":"KALRN","ko":-0.184,"mut":-0.234,"ctrl":7.0,"cat":"other","label":false},{"gene":"RPL10A","ko":-0.054,"mut":-0.103,"ctrl":249.8,"cat":"other","label":false},{"gene":"LPIN2","ko":0.205,"mut":0.04,"ctrl":6.1,"cat":"other","label":false},{"gene":"EI24","ko":-0.065,"mut":-0.071,"ctrl":31.4,"cat":"other","label":false},{"gene":"COMMD1","ko":0.29,"mut":0.252,"ctrl":6.2,"cat":"other","label":false},{"gene":"GTF3C1","ko":-0.129,"mut":-0.234,"ctrl":14.7,"cat":"other","label":false},{"gene":"ARHGEF7","ko":0.019,"mut":0.032,"ctrl":16.1,"cat":"other","label":false},{"gene":"PPP1R18","ko":-0.079,"mut":-0.129,"ctrl":20.0,"cat":"other","label":false},{"gene":"IMMT","ko":-0.143,"mut":-0.212,"ctrl":33.5,"cat":"other","label":false},{"gene":"LAMTOR1","ko":0.032,"mut":0.021,"ctrl":23.0,"cat":"other","label":false},{"gene":"ZNF738","ko":0.295,"mut":0.262,"ctrl":13.7,"cat":"other","label":false},{"gene":"PCNP","ko":0.007,"mut":0.042,"ctrl":41.2,"cat":"other","label":false},{"gene":"ATAT1","ko":0.088,"mut":0.061,"ctrl":43.7,"cat":"other","label":false},{"gene":"TMEM126B","ko":0.331,"mut":0.45,"ctrl":11.4,"cat":"other","label":false},{"gene":"SOCS3","ko":-0.026,"mut":-0.186,"ctrl":47.2,"cat":"other","label":false},{"gene":"UBE2D1","ko":0.066,"mut":0.013,"ctrl":15.2,"cat":"other","label":false},{"gene":"TADA3","ko":-0.044,"mut":-0.194,"ctrl":17.1,"cat":"other","label":false},{"gene":"FAM129B","ko":-0.123,"mut":-0.173,"ctrl":10.0,"cat":"other","label":false},{"gene":"RNF145","ko":-0.143,"mut":-0.141,"ctrl":21.7,"cat":"other","label":false},{"gene":"APLP2","ko":-0.244,"mut":-0.341,"ctrl":91.6,"cat":"other","label":false},{"gene":"BRD4","ko":-0.201,"mut":-0.208,"ctrl":13.5,"cat":"other","label":false},{"gene":"G6PD","ko":-0.192,"mut":-0.356,"ctrl":12.1,"cat":"other","label":false},{"gene":"ZFAND3","ko":-0.189,"mut":-0.368,"ctrl":42.7,"cat":"other","label":false},{"gene":"SUN2","ko":-0.276,"mut":-0.33,"ctrl":16.9,"cat":"other","label":false},{"gene":"GNG4","ko":0.165,"mut":0.095,"ctrl":49.1,"cat":"other","label":false},{"gene":"SLC26A11","ko":-0.159,"mut":-0.154,"ctrl":10.8,"cat":"other","label":false},{"gene":"SKI","ko":-0.055,"mut":-0.23,"ctrl":20.4,"cat":"other","label":false},{"gene":"DESI2","ko":-0.087,"mut":-0.051,"ctrl":9.0,"cat":"other","label":false},{"gene":"TEX261","ko":0.199,"mut":0.089,"ctrl":8.2,"cat":"other","label":false},{"gene":"PEX3","ko":-0.124,"mut":0.011,"ctrl":5.7,"cat":"other","label":false},{"gene":"FBXO7","ko":0.046,"mut":-0.008,"ctrl":9.4,"cat":"other","label":false},{"gene":"PLEKHM2","ko":0.185,"mut":0.11,"ctrl":24.4,"cat":"other","label":false},{"gene":"CLTB","ko":0.009,"mut":-0.106,"ctrl":57.1,"cat":"other","label":false},{"gene":"S100A10","ko":0.245,"mut":0.315,"ctrl":65.9,"cat":"other","label":false},{"gene":"CA11","ko":-0.044,"mut":-0.107,"ctrl":23.0,"cat":"other","label":false},{"gene":"GAREM1","ko":-0.195,"mut":-0.329,"ctrl":7.8,"cat":"other","label":false},{"gene":"CALY","ko":0.319,"mut":0.555,"ctrl":14.7,"cat":"other","label":false},{"gene":"TMED10","ko":-0.163,"mut":-0.165,"ctrl":57.5,"cat":"other","label":false},{"gene":"ARMC1","ko":0.139,"mut":0.225,"ctrl":20.2,"cat":"other","label":false},{"gene":"RAB31","ko":-0.135,"mut":-0.234,"ctrl":6.1,"cat":"other","label":false},{"gene":"PTPRA","ko":-0.323,"mut":-0.369,"ctrl":51.9,"cat":"other","label":false},{"gene":"BUB3","ko":-0.172,"mut":-0.177,"ctrl":15.7,"cat":"other","label":false},{"gene":"LDHB","ko":-0.06,"mut":-0.07,"ctrl":8.6,"cat":"other","label":false},{"gene":"IGF2BP1","ko":0.034,"mut":-0.06,"ctrl":16.1,"cat":"other","label":false},{"gene":"XPO6","ko":-0.094,"mut":-0.159,"ctrl":32.5,"cat":"other","label":false},{"gene":"NDUFB5","ko":0.056,"mut":0.008,"ctrl":14.9,"cat":"other","label":false},{"gene":"FADS1","ko":-0.048,"mut":-0.085,"ctrl":21.0,"cat":"other","label":false},{"gene":"EZH2","ko":0.237,"mut":0.277,"ctrl":6.8,"cat":"other","label":false},{"gene":"RPS7","ko":0.06,"mut":0.068,"ctrl":49.3,"cat":"other","label":false},{"gene":"SYN2","ko":0.051,"mut":0.162,"ctrl":8.0,"cat":"other","label":false},{"gene":"LZTS3","ko":-0.082,"mut":-0.04,"ctrl":28.9,"cat":"other","label":false},{"gene":"PSMD13","ko":0.141,"mut":0.276,"ctrl":18.7,"cat":"other","label":false},{"gene":"TBC1D9","ko":-0.126,"mut":-0.158,"ctrl":33.1,"cat":"other","label":false},{"gene":"DDX42","ko":-0.21,"mut":-0.247,"ctrl":16.7,"cat":"other","label":false},{"gene":"RALBP1","ko":-0.283,"mut":-0.319,"ctrl":9.2,"cat":"other","label":false},{"gene":"CLPX","ko":-0.154,"mut":-0.147,"ctrl":10.7,"cat":"other","label":false},{"gene":"BUD13","ko":-0.115,"mut":-0.101,"ctrl":7.9,"cat":"other","label":false},{"gene":"ABR","ko":-0.049,"mut":-0.149,"ctrl":17.9,"cat":"other","label":false},{"gene":"CAND2","ko":-0.19,"mut":-0.305,"ctrl":7.6,"cat":"other","label":false},{"gene":"RAN","ko":-0.003,"mut":-0.003,"ctrl":66.0,"cat":"other","label":false},{"gene":"SPRYD3","ko":-0.099,"mut":-0.288,"ctrl":24.9,"cat":"other","label":false},{"gene":"MARS2","ko":-0.017,"mut":-0.211,"ctrl":6.5,"cat":"other","label":false},{"gene":"TMEM245","ko":-0.308,"mut":-0.317,"ctrl":21.1,"cat":"other","label":false},{"gene":"ELOVL6","ko":0.036,"mut":0.044,"ctrl":13.3,"cat":"other","label":false},{"gene":"NUMBL","ko":0.049,"mut":-0.003,"ctrl":19.4,"cat":"other","label":false},{"gene":"C1QTNF4","ko":0.423,"mut":0.364,"ctrl":46.3,"cat":"other","label":false},{"gene":"MTMR6","ko":0.185,"mut":0.305,"ctrl":21.5,"cat":"other","label":false},{"gene":"MAP3K6","ko":-0.252,"mut":-0.343,"ctrl":5.1,"cat":"other","label":false},{"gene":"RER1","ko":0.103,"mut":0.091,"ctrl":9.0,"cat":"other","label":false},{"gene":"FYTTD1","ko":0.037,"mut":0.019,"ctrl":17.3,"cat":"other","label":false},{"gene":"UBL7","ko":-0.209,"mut":-0.364,"ctrl":28.1,"cat":"other","label":false},{"gene":"DIP2B","ko":-0.17,"mut":-0.224,"ctrl":12.4,"cat":"other","label":false},{"gene":"NDUFAF1","ko":-0.106,"mut":-0.099,"ctrl":14.7,"cat":"other","label":false},{"gene":"BCKDHB","ko":-0.261,"mut":-0.262,"ctrl":6.1,"cat":"other","label":false},{"gene":"CPNE2","ko":-0.395,"mut":-0.35,"ctrl":5.2,"cat":"other","label":false},{"gene":"CAPN7","ko":0.182,"mut":0.159,"ctrl":7.6,"cat":"other","label":false},{"gene":"MICALL1","ko":-0.043,"mut":-0.007,"ctrl":12.4,"cat":"other","label":false},{"gene":"CHMP5","ko":-0.002,"mut":0.141,"ctrl":30.6,"cat":"other","label":false},{"gene":"UBAC1","ko":-0.129,"mut":-0.174,"ctrl":21.7,"cat":"other","label":false},{"gene":"KLHL12","ko":-0.223,"mut":-0.239,"ctrl":24.7,"cat":"other","label":false},{"gene":"BTG3","ko":-0.133,"mut":-0.185,"ctrl":7.0,"cat":"other","label":false},{"gene":"CAD","ko":-0.059,"mut":-0.157,"ctrl":10.4,"cat":"other","label":false},{"gene":"EIF5B","ko":-0.147,"mut":-0.14,"ctrl":11.3,"cat":"other","label":false},{"gene":"TMA7","ko":0.369,"mut":0.443,"ctrl":14.7,"cat":"other","label":false},{"gene":"ASXL3","ko":-0.069,"mut":-0.152,"ctrl":7.4,"cat":"other","label":false},{"gene":"ANKRD50","ko":-0.295,"mut":-0.444,"ctrl":16.4,"cat":"other","label":false},{"gene":"ACADVL","ko":0.046,"mut":0.179,"ctrl":12.7,"cat":"other","label":false},{"gene":"SLC35B4","ko":-0.096,"mut":-0.161,"ctrl":16.9,"cat":"other","label":false},{"gene":"YIPF1","ko":-0.068,"mut":-0.053,"ctrl":24.2,"cat":"other","label":false},{"gene":"PSAT1","ko":-0.247,"mut":-0.258,"ctrl":40.0,"cat":"other","label":false},{"gene":"NAA35","ko":-0.048,"mut":-0.092,"ctrl":11.7,"cat":"other","label":false},{"gene":"C1QBP","ko":0.127,"mut":0.107,"ctrl":42.6,"cat":"other","label":false},{"gene":"ZNHIT3","ko":0.159,"mut":0.204,"ctrl":5.8,"cat":"other","label":false},{"gene":"H2AFX","ko":-0.129,"mut":-0.397,"ctrl":84.0,"cat":"other","label":false},{"gene":"KIAA0895L","ko":0.167,"mut":0.27,"ctrl":35.5,"cat":"other","label":false},{"gene":"SRSF3","ko":0.235,"mut":0.28,"ctrl":26.2,"cat":"other","label":false},{"gene":"HNRNPUL1","ko":-0.137,"mut":-0.273,"ctrl":33.5,"cat":"other","label":false},{"gene":"ZNF92","ko":0.217,"mut":0.304,"ctrl":5.4,"cat":"other","label":false},{"gene":"EIF2B5","ko":0.167,"mut":0.134,"ctrl":7.0,"cat":"other","label":false},{"gene":"NUDT14","ko":0.167,"mut":0.155,"ctrl":11.7,"cat":"other","label":false},{"gene":"CCNT2","ko":0.111,"mut":0.204,"ctrl":8.5,"cat":"other","label":false},{"gene":"ACTR1A","ko":-0.079,"mut":-0.169,"ctrl":66.2,"cat":"other","label":false},{"gene":"PELI2","ko":-0.101,"mut":-0.231,"ctrl":16.2,"cat":"other","label":false},{"gene":"POLB","ko":0.375,"mut":0.462,"ctrl":6.8,"cat":"other","label":false},{"gene":"POGK","ko":-0.056,"mut":-0.069,"ctrl":12.5,"cat":"other","label":false},{"gene":"FBXL14","ko":-0.084,"mut":-0.285,"ctrl":11.6,"cat":"other","label":false},{"gene":"WASHC2A","ko":-0.003,"mut":0.003,"ctrl":10.0,"cat":"other","label":false},{"gene":"RPSA","ko":-0.01,"mut":-0.021,"ctrl":171.1,"cat":"other","label":false},{"gene":"GPRC5B","ko":-0.041,"mut":-0.013,"ctrl":7.7,"cat":"other","label":false},{"gene":"CTTNBP2NL","ko":-0.203,"mut":-0.245,"ctrl":8.3,"cat":"other","label":false},{"gene":"BAALC","ko":0.118,"mut":0.116,"ctrl":36.7,"cat":"other","label":false},{"gene":"STAM2","ko":-0.028,"mut":-0.064,"ctrl":8.1,"cat":"other","label":false},{"gene":"MEPCE","ko":-0.119,"mut":-0.291,"ctrl":11.4,"cat":"other","label":false},{"gene":"ST8SIA1","ko":-0.178,"mut":-0.295,"ctrl":8.2,"cat":"other","label":false},{"gene":"RNF123","ko":-0.009,"mut":-0.12,"ctrl":6.9,"cat":"other","label":false},{"gene":"NAA20","ko":0.255,"mut":0.336,"ctrl":13.6,"cat":"other","label":false},{"gene":"ATP6V1E1","ko":-0.016,"mut":0.034,"ctrl":39.4,"cat":"other","label":false},{"gene":"PTDSS1","ko":-0.027,"mut":-0.067,"ctrl":18.8,"cat":"other","label":false},{"gene":"H2AFV","ko":-0.091,"mut":-0.15,"ctrl":32.3,"cat":"other","label":false},{"gene":"CYB5R1","ko":0.02,"mut":-0.016,"ctrl":12.1,"cat":"other","label":false},{"gene":"RPL7A","ko":-0.133,"mut":-0.184,"ctrl":399.1,"cat":"other","label":false},{"gene":"ADAM9","ko":-0.217,"mut":-0.19,"ctrl":6.0,"cat":"other","label":false},{"gene":"LARS2","ko":-0.081,"mut":-0.101,"ctrl":7.3,"cat":"other","label":false},{"gene":"RTN2","ko":0.041,"mut":-0.057,"ctrl":27.9,"cat":"other","label":false},{"gene":"CHST15","ko":-0.129,"mut":-0.152,"ctrl":11.8,"cat":"other","label":false},{"gene":"SEZ6L","ko":-0.51,"mut":-0.649,"ctrl":56.5,"cat":"other","label":false},{"gene":"DNAJC11","ko":-0.123,"mut":-0.242,"ctrl":9.8,"cat":"other","label":false},{"gene":"DIP2C","ko":-0.273,"mut":-0.464,"ctrl":22.8,"cat":"other","label":false},{"gene":"WDCP","ko":-0.014,"mut":-0.025,"ctrl":8.6,"cat":"other","label":false},{"gene":"TPM3","ko":0.155,"mut":0.101,"ctrl":23.5,"cat":"other","label":false},{"gene":"MAP4K4","ko":-0.061,"mut":-0.08,"ctrl":31.6,"cat":"other","label":false},{"gene":"WNK2","ko":-0.234,"mut":-0.292,"ctrl":11.9,"cat":"other","label":false},{"gene":"TMEM175","ko":0.016,"mut":0.18,"ctrl":9.8,"cat":"other","label":false},{"gene":"EEF1A1","ko":-0.145,"mut":-0.117,"ctrl":1421.7,"cat":"other","label":false},{"gene":"ERF","ko":-0.134,"mut":-0.41,"ctrl":20.1,"cat":"other","label":false},{"gene":"FTH1","ko":0.201,"mut":0.209,"ctrl":217.5,"cat":"other","label":false},{"gene":"HSPA4","ko":-0.186,"mut":-0.227,"ctrl":64.2,"cat":"other","label":false},{"gene":"GRB2","ko":-0.16,"mut":-0.25,"ctrl":66.5,"cat":"other","label":false},{"gene":"TERF2IP","ko":-0.171,"mut":-0.24,"ctrl":103.6,"cat":"other","label":false},{"gene":"FBXO21","ko":-0.123,"mut":-0.179,"ctrl":18.0,"cat":"other","label":false},{"gene":"PSMB3","ko":0.111,"mut":0.18,"ctrl":51.1,"cat":"other","label":false}];
+
+// ── SCATTER PLOT ─────────────────────────────────────────────
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const svg = document.getElementById('net-svg');
-const W = 760, H = 440;
-const CX = 380, CY = 220;
+const sc = document.getElementById('scatter-svg');
+const W=600, H=480, PAD={l:56,r:20,t:28,b:52};
+const PW=W-PAD.l-PAD.r, PH=H-PAD.t-PAD.b;
 
-const NODES = [
-  // center
-  {id:'tbk1', label:'TBK1', x:CX, y:CY, r:34, color:'#4fa3d4', group:'kinase',
-   site:'', func:'Master kinase: haploinsufficiency causes familial ALS/FTD'},
-  // Cargo receptors — left arc
-  {id:'sqstm1', label:'SQSTM1\n(p62)', x:105, y:120, r:22, color:'#e05c5c', group:'cargo',
-   site:'pS361 / pS366', func:'Universal ubiquitin cargo receptor; aggregates in ALS motor neurons'},
-  {id:'optn',  label:'OPTN',  x:75,  y:220, r:22, color:'#e05c5c', group:'cargo',
-   site:'pS177', func:'Optineurin; selective autophagy of mitochondria and bacteria; ALS risk gene'},
-  {id:'ndp52', label:'NDP52\n(CALCOCO2)', x:110, y:330, r:22, color:'#e05c5c', group:'cargo',
-   site:'pS355', func:'Selective autophagy of ubiquitinated cargo; loss increases TDP-43 aggregation'},
-  {id:'nbr1',  label:'NBR1',  x:200, y:390, r:22, color:'#e05c5c', group:'cargo',
-   site:'pS622', func:'Neighbor of BRCA1; cargo receptor for aggresome clearance'},
-  {id:'tax1bp1',label:'TAX1BP1',x:320, y:400, r:22, color:'#e05c5c', group:'cargo',
-   site:'pS593', func:'Cargo receptor for ferritinophagy and mitophagy; co-activator with OPTN'},
-  // Initiation — top
-  {id:'fip200', label:'FIP200\n(RB1CC1)', x:300, y:58, r:22, color:'#4fa3d4', group:'init',
-   site:'pS1286', func:'ULK1 complex scaffold; nucleates phagophore membrane at cargo sites'},
-  {id:'atg9a',  label:'ATG9A',  x:450, y:48, r:22, color:'#4fa3d4', group:'init',
-   site:'pS755', func:'Lipid scramblase; delivers membrane to growing autophagosome'},
-  // Endo-lysosomal — right
-  {id:'rab7a',  label:'RAB7A',  x:655, y:155, r:22, color:'#e8a44a', group:'endo',
-   site:'pS72', func:'Late endosome GTPase; directs autophagosome–lysosome fusion'},
-  {id:'ncoa7',  label:'NCOA7',  x:668, y:285, r:22, color:'#e8a44a', group:'endo',
-   site:'pS441', func:'V-ATPase regulator; acidification of lysosomal lumen'},
-  // Adapters — bottom right
-  {id:'azi2',   label:'AZI2\n(NAP1)', x:555, y:385, r:20, color:'#9b7fd4', group:'adapt',
-   site:'', func:'TBK1 adaptor; links TBK1 to the NF-κB / IRF3 axis and autophagy'},
-];
+const CAT_COLOR = {
+  mito:'#c0392b', autophagy:'#1a7a4a', synapse:'#1a5276',
+  sting:'#e67e22', als:'#6c3483', other:'#bbb'
+};
+const CAT_LABEL = {
+  mito:'Mitochondrial', autophagy:'Autophagy/Lysosomal',
+  synapse:'Synaptic', sting:'STING pathway', als:'ALS-linked', other:'Other'
+};
 
-const EDGES = [
-  ['tbk1','sqstm1'],['tbk1','optn'],['tbk1','ndp52'],['tbk1','nbr1'],['tbk1','tax1bp1'],
-  ['tbk1','fip200'],['tbk1','atg9a'],
-  ['tbk1','rab7a'],['tbk1','ncoa7'],
-  ['tbk1','azi2'],
-];
+// Axis range
+const allKO = SCATTER.map(d=>d.ko), allMUT = SCATTER.map(d=>d.mut);
+const xMin=-2.5, xMax=1.9, yMin=-3.5, yMax=1.9;
 
-const GROUP_LABELS = [
-  {x:60,  y:72,  text:'Cargo receptors', color:'#e05c5c'},
-  {x:252, y:22,  text:'Initiation', color:'#4fa3d4'},
-  {x:640, y:115, text:'Endo-lysosomal', color:'#e8a44a'},
-  {x:545, y:425, text:'Adaptors', color:'#9b7fd4'},
-];
+function sx(v){ return PAD.l + (v-xMin)/(xMax-xMin)*PW; }
+function sy(v){ return PAD.t + (1-(v-yMin)/(yMax-yMin))*PH; }
 
-function el(tag, attrs={}) {
-  const e = document.createElementNS(SVG_NS, tag);
-  for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+function el(tag,attrs={}){
+  const e=document.createElementNS(SVG_NS,tag);
+  for(const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
   return e;
 }
 
-// Defs
-const defs = el('defs');
-const glow = el('filter',{id:'glow','x':'-30%','y':'-30%','width':'160%','height':'160%'});
-const fe = el('feGaussianBlur',{in:'SourceGraphic',stdDeviation:'4',result:'blur'});
-const feMerge = el('feMerge');
-feMerge.appendChild(el('feMergeNode',{in:'blur'}));
-feMerge.appendChild(el('feMergeNode',{in:'SourceGraphic'}));
-glow.appendChild(fe); glow.appendChild(feMerge);
-defs.appendChild(glow);
-svg.appendChild(defs);
+// Grid & axes
+const g0=el('g'); sc.appendChild(g0);
+// Zero lines
+g0.appendChild(el('line',{x1:sx(0),y1:PAD.t,x2:sx(0),y2:PAD.t+PH,stroke:'#ccc','stroke-dasharray':'3 3'}));
+g0.appendChild(el('line',{x1:PAD.l,y1:sy(0),x2:PAD.l+PW,y2:sy(0),stroke:'#ccc','stroke-dasharray':'3 3'}));
+// Diagonal
+g0.appendChild(el('line',{x1:sx(xMin),y1:sy(xMin),x2:sx(Math.min(xMax,yMax)),y2:sy(Math.min(xMax,yMax)),stroke:'#e0e0e0','stroke-dasharray':'6 4'}));
 
-const nodeMap = Object.fromEntries(NODES.map(n=>[n.id,n]));
-
-// Edges
-for (const [a,b] of EDGES) {
-  const na=nodeMap[a], nb=nodeMap[b];
-  const line = el('line',{x1:na.x,y1:na.y,x2:nb.x,y2:nb.y,
-    stroke:'#1e3a58',strokeWidth:'1.5','stroke-dasharray':'4 3',opacity:'.7'});
-  svg.appendChild(line);
-}
-
-// Group labels
-for (const g of GROUP_LABELS) {
-  const t = el('text',{x:g.x,y:g.y,fill:g.color,
-    'font-family':'-apple-system,sans-serif','font-size':'11',opacity:'.85'});
-  t.textContent=g.text;
-  svg.appendChild(t);
-}
-
-// Nodes
-const tip = document.getElementById('tooltip');
-const ttTitle = document.getElementById('tt-title');
-const ttBody = document.getElementById('tt-body');
-
-for (const n of NODES) {
-  const g = el('g',{cursor:'pointer'});
-
-  const circle = el('circle',{cx:n.x,cy:n.y,r:n.r,fill:n.color+'22',
-    stroke:n.color,'stroke-width':'1.8'});
-  g.appendChild(circle);
-
-  // Label (multi-line)
-  const lines = n.label.split('\n');
-  const yStart = n.y - (lines.length-1)*7;
-  for (let i=0;i<lines.length;i++) {
-    const t = el('text',{x:n.x,y:yStart+i*13,'text-anchor':'middle',
-      fill:n.color,'font-family':'-apple-system,sans-serif',
-      'font-size': n.id==='tbk1'?'13':'10','font-weight':'600'});
-    t.textContent=lines[i];
-    g.appendChild(t);
+// Axis ticks
+const ticks=[-2,-1,0,1];
+ticks.forEach(t=>{
+  if(t>=xMin&&t<=xMax){
+    g0.appendChild(el('line',{x1:sx(t),y1:PAD.t+PH,x2:sx(t),y2:PAD.t+PH+4,stroke:'#666'}));
+    const tx=el('text',{x:sx(t),y:PAD.t+PH+16,'text-anchor':'middle',fill:'#666','font-family':'-apple-system,sans-serif','font-size':'10'});
+    tx.textContent=t; g0.appendChild(tx);
   }
+  if(t>=yMin&&t<=yMax){
+    g0.appendChild(el('line',{x1:PAD.l-4,y1:sy(t),x2:PAD.l,y2:sy(t),stroke:'#666'}));
+    const tx=el('text',{x:PAD.l-8,y:sy(t)+4,'text-anchor':'end',fill:'#666','font-family':'-apple-system,sans-serif','font-size':'10'});
+    tx.textContent=t; g0.appendChild(tx);
+  }
+});
 
-  g.addEventListener('mousemove',e=>{
-    ttTitle.textContent = n.label.replace('\n',' ') + (n.site ? ` — ${n.site}` : '');
-    ttBody.textContent = n.func;
-    tip.style.display='block';
-    tip.style.left=(e.clientX+14)+'px';
-    tip.style.top=(e.clientY-10)+'px';
+// Axis labels
+const xl=el('text',{x:PAD.l+PW/2,y:H-6,'text-anchor':'middle',fill:'#444','font-family':'-apple-system,sans-serif','font-size':'11'});
+xl.textContent='log₂FC TBK1 KO vs Control'; g0.appendChild(xl);
+const yl=el('text',{x:14,y:PAD.t+PH/2,'text-anchor':'middle',fill:'#444','font-family':'-apple-system,sans-serif','font-size':'11',transform:`rotate(-90,14,${PAD.t+PH/2})`});
+yl.textContent='log₂FC E696K mut vs Control'; g0.appendChild(yl);
+
+// Tooltip
+const tip=document.getElementById('tooltip');
+const ttT=document.getElementById('tt-title'), ttB=document.getElementById('tt-body');
+
+// Points
+const dotGroups={};
+const CATS=['mito','sting','autophagy','synapse','als','other'];
+CATS.forEach(cat=>{ dotGroups[cat]=el('g'); sc.appendChild(dotGroups[cat]); });
+
+let activeFilter=null;
+
+function renderDots(){
+  CATS.forEach(cat=>{ while(dotGroups[cat].firstChild) dotGroups[cat].removeChild(dotGroups[cat].firstChild); });
+
+  // Sort: other first, then by priority
+  const order=['other','autophagy','synapse','als','sting','mito'];
+  const sorted=[...SCATTER].sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat));
+
+  sorted.forEach(d=>{
+    const visible = !activeFilter || d.cat===activeFilter;
+    const x=sx(d.ko), y=sy(d.mut);
+    if(x<PAD.l-4||x>W-PAD.r+4||y<PAD.t-4||y>H-PAD.b+4) return;
+
+    const c=el('circle',{cx:x,cy:y,r:d.cat==='other'?2.5:4,
+      fill:visible?CAT_COLOR[d.cat]:'#ddd',
+      opacity:visible?(d.cat==='other'?0.4:0.82):0.2,
+      'stroke':visible&&d.cat!=='other'?'rgba(0,0,0,.15)':'none','stroke-width':'0.5',
+      cursor:'pointer'});
+
+    c.addEventListener('mousemove',e=>{
+      ttT.textContent=d.gene;
+      ttB.textContent=`KO: ${d.ko>0?'+':''}${d.ko} · MUT: ${d.mut>0?'+':''}${d.mut} · Category: ${CAT_LABEL[d.cat]}`;
+      tip.style.display='block';
+      tip.style.left=(e.clientX+14)+'px'; tip.style.top=(e.clientY-10)+'px';
+    });
+    c.addEventListener('mouseleave',()=>tip.style.display='none');
+    dotGroups[d.cat].appendChild(c);
+
+    // Labels for important genes
+    if(visible && d.label && d.cat!=='other'){
+      const lx=x+5, ly=y-4;
+      const lt=el('text',{x:lx,y:ly,fill:CAT_COLOR[d.cat],'font-family':'-apple-system,sans-serif','font-size':'8.5','font-weight':'600','pointer-events':'none'});
+      lt.textContent=d.gene;
+      dotGroups[d.cat].appendChild(lt);
+    }
   });
-  g.addEventListener('mouseleave',()=>{ tip.style.display='none'; });
-  svg.appendChild(g);
 }
+renderDots();
 
-// ── HEATMAP ──────────────────────────────────────────────────────────────────
-const REGIONS = ['Hipp','EC','PFC','SSp','MOp','Thal','Str','Cereb'];
+// Legend + filter
+const legendEl=document.getElementById('legend');
+const filterRow=document.getElementById('filter-row');
+CATS.forEach(cat=>{
+  const li=document.createElement('div');
+  li.className='legend-item'; li.dataset.cat=cat;
+  li.innerHTML=`<div class="legend-dot" style="background:${CAT_COLOR[cat]}"></div>${CAT_LABEL[cat]}`;
+  li.addEventListener('click',()=>{
+    activeFilter = (activeFilter===cat)?null:cat;
+    document.querySelectorAll('.legend-item').forEach(el=>el.classList.toggle('dimmed',activeFilter&&el.dataset.cat!==activeFilter));
+    renderDots();
+  });
+  legendEl.appendChild(li);
+});
 
-const DATA = {
-  'Tbk1':   {Hipp:0.0236, EC:0.0123, PFC:0.047,  SSp:0.026,  MOp:0.0393, Thal:0.0316, Str:0.0137, Cereb:0.0089},
-  'Sqstm1': {Hipp:0.1475, EC:0.1838, PFC:0.0964, SSp:0.1774, MOp:0.1618, Thal:0.1555, Str:0.146,  Cereb:0.0769},
-  'Optn':   {Hipp:0.0026, EC:0.0055, PFC:0.0075, SSp:0.0017, MOp:0.0029, Thal:0.0009, Str:0.0009, Cereb:0.0063},
-  'Atg9a':  {Hipp:0.0143, EC:0.0171, PFC:0.0216, SSp:0.0265, MOp:0.0386, Thal:0.0133, Str:0.0075, Cereb:0.0087},
-  'Rb1cc1': {Hipp:0.0062, EC:0.0075, PFC:0.0059, SSp:0.0102, MOp:0.0119, Thal:0.007,  Str:0.0041, Cereb:0.0016},
+// ── HEATMAP ──────────────────────────────────────────────────
+const REGIONS=['Hipp','EC','PFC','SSp','MOp','Thal','Str','Cereb'];
+const HM_DATA={
+  'Sv2b':   {Hipp:0.0707,EC:0.1252,PFC:0.0248,SSp:0.1389,MOp:0.147, Thal:0.0468,Str:0.0288,Cereb:0.0197},
+  'Snap25': {Hipp:0.1128,EC:0.141, PFC:0.1985,SSp:0.1874,MOp:0.1877,Thal:0.1353,Str:0.1151,Cereb:0.1022},
+  'Stmn2':  {Hipp:0.0804,EC:0.1123,PFC:0.1298,SSp:0.1406,MOp:0.1526,Thal:0.114, Str:0.0472,Cereb:0.0843},
+  'Bnip3l': {Hipp:0.0113,EC:0.0382,PFC:0.0174,SSp:0.0209,MOp:0.0228,Thal:0.0083,Str:0.0099,Cereb:0.0055},
+  'Tmem173':{Hipp:0.0007,EC:0.0004,PFC:0.0071,SSp:0.0004,MOp:0.0008,Thal:0.0014,Str:0.0007,Cereb:0.0024},
 };
 
-function valToColor(v, min, max) {
-  if (v === null) return '#111';
-  const t = (v - min) / (max - min || 1);
-  const r = Math.round(13  + t*(80 - 13));
-  const g = Math.round(32  + t*(163- 32));
-  const b = Math.round(44  + t*(212- 44));
+function valToColor(v,min,max){
+  if(v===null) return '#f0ece6';
+  const t=(v-min)/(max-min||1);
+  const r=Math.round(240-t*140), g=Math.round(240-t*90), b=Math.round(220-t*170);
   return `rgb(${r},${g},${b})`;
 }
 
-function renderRow(gene, rowData, isLive=false) {
-  const vals = REGIONS.map(r => rowData[r] ?? null);
-  const defined = vals.filter(v=>v!==null);
-  const min = Math.min(...defined), max = Math.max(...defined);
-
-  const tr = document.createElement('tr');
-  const th = document.createElement('td');
-  th.textContent = gene + (isLive ? ' ✦' : '');
-  if (isLive) th.style.color = '#e8c26a';
+function addRow(gene,data,isLive=false){
+  const vals=REGIONS.map(r=>data[r]??null);
+  const defs=vals.filter(v=>v!==null);
+  const mn=Math.min(...defs), mx=Math.max(...defs);
+  const tr=document.createElement('tr');
+  const th=document.createElement('td');
+  th.textContent=gene+(isLive?' ✦':'');
+  if(isLive) th.style.color='#c47a00';
   tr.appendChild(th);
-
-  vals.forEach((v, i) => {
-    const td = document.createElement('td');
-    td.style.background = valToColor(v, min, max);
-    td.style.color = v !== null ? '#e8f4ff' : '#333';
-    td.textContent = v !== null ? v.toFixed(4) : '—';
-    td.title = `${gene} · ${REGIONS[i]}: ${v !== null ? v : 'no data'}`;
-    td.addEventListener('mousemove', e => {
-      ttTitle.textContent = `${gene} — ${REGIONS[i]}`;
-      ttBody.textContent = `Expression density: ${v !== null ? v.toFixed(4) : 'no data'}`;
+  vals.forEach((v,i)=>{
+    const td=document.createElement('td');
+    td.style.background=valToColor(v,mn,mx);
+    td.style.color=v!==null?'#1a1a1a':'#999';
+    td.textContent=v!==null?v.toFixed(4):'—';
+    td.addEventListener('mousemove',e=>{
+      ttT.textContent=`${gene} — ${REGIONS[i]}`;
+      ttB.textContent=`Expression density: ${v!==null?v.toFixed(4):'n/a'}`;
       tip.style.display='block';
       tip.style.left=(e.clientX+14)+'px'; tip.style.top=(e.clientY-10)+'px';
     });
     td.addEventListener('mouseleave',()=>tip.style.display='none');
     tr.appendChild(td);
   });
-  return tr;
+  document.getElementById('hm-body').appendChild(tr);
 }
 
-const tbody = document.getElementById('hm-body');
-for (const [gene, rowData] of Object.entries(DATA)) {
-  tbody.appendChild(renderRow(gene, rowData));
-}
+for(const [g,d] of Object.entries(HM_DATA)) addRow(g,d);
 
-// Live Allen query
-async function queryGene() {
-  const input = document.getElementById('gene-input').value.trim();
-  if (!input) return;
-  const status = document.getElementById('query-status');
+async function queryGene(){
+  const input=document.getElementById('gene-input').value.trim();
+  if(!input) return;
+  const status=document.getElementById('query-status');
   status.className=''; status.textContent='Querying Allen Brain Atlas…';
-  try {
-    const gene = input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
-    const STRUCT_IDS = {Hipp:1080,EC:909,PFC:184,SSp:453,MOp:985,Thal:549,Str:477,Cereb:512};
-    let expId = null;
-    for (const plane of ['coronal','sagittal']) {
-      const r = await fetch(`https://api.brain-map.org/api/v2/data/query.json?criteria=model::SectionDataSet,rma::criteria,[failed$eq'false'],products[abbreviation$eq'Mouse'],genes[acronym$eq'${gene}'],plane_of_section[name$eq'${plane}']&num_rows=1`);
-      const d = await r.json();
-      if (d.msg.length) { expId=d.msg[0].id; break; }
+  try{
+    const gene=input.charAt(0).toUpperCase()+input.slice(1).toLowerCase();
+    const STRUCTS={Hipp:1080,EC:909,PFC:184,SSp:453,MOp:985,Thal:549,Str:477,Cereb:512};
+    let expId=null;
+    for(const plane of ['coronal','sagittal']){
+      const r=await fetch(`https://api.brain-map.org/api/v2/data/query.json?criteria=model::SectionDataSet,rma::criteria,[failed$eq'false'],products[abbreviation$eq'Mouse'],genes[acronym$eq'${gene}'],plane_of_section[name$eq'${plane}']&num_rows=1`);
+      const d=await r.json();
+      if(d.msg.length){expId=d.msg[0].id;break;}
     }
-    if (!expId) throw new Error(`No ISH experiment found for "${gene}"`);
-    const rowData = {};
-    await Promise.all(REGIONS.map(async reg => {
-      const sid = STRUCT_IDS[reg];
-      const r = await fetch(`https://api.brain-map.org/api/v2/data/query.json?criteria=model::StructureUnionize,rma::criteria,section_data_set[id$eq${expId}],structure[id$eq${sid}]&num_rows=1`);
-      const d = await r.json();
-      rowData[reg] = d.msg.length ? d.msg[0].expression_density : null;
+    if(!expId) throw new Error(`No ISH experiment for "${gene}"`);
+    const rowData={};
+    await Promise.all(REGIONS.map(async reg=>{
+      const r=await fetch(`https://api.brain-map.org/api/v2/data/query.json?criteria=model::StructureUnionize,rma::criteria,section_data_set[id$eq${expId}],structure[id$eq${STRUCTS[reg]}]&num_rows=1`);
+      const d=await r.json();
+      rowData[reg]=d.msg.length?d.msg[0].expression_density:null;
     }));
-    tbody.appendChild(renderRow(gene, rowData, true));
-    status.textContent=`Loaded ${gene} (experiment ${expId}) as new row.`;
+    addRow(gene,rowData,true);
+    status.textContent=`Loaded ${gene} (experiment ${expId}).`;
     document.getElementById('gene-input').value='';
-  } catch(err) {
+  } catch(err){
     status.className='error'; status.textContent=`Error: ${err.message}`;
   }
 }
-document.getElementById('gene-input').addEventListener('keydown',e=>{ if(e.key==='Enter') queryGene(); });
+document.getElementById('gene-input').addEventListener('keydown',e=>{if(e.key==='Enter')queryGene();});
 </script>
 </body>
 </html>
