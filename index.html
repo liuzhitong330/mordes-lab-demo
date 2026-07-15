@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TBK1 and the Autophagy Network in ALS — Mordes Lab Demo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e1621; --surface:#16202e; --border:#1f3044;
+  --text:#d4e4f4; --muted:#6a8aa8; --accent:#4fa3d4;
+  --red:#e05c5c; --blue:#4fa3d4; --orange:#e8a44a; --purple:#9b7fd4; --green:#4db88c;
+  font-family:'Georgia',serif;
+}
+body{background:var(--bg);color:var(--text);line-height:1.7}
+
+/* IDENTITY BANNER */
+#id-banner{background:#e8f0f8;text-align:center;padding:7px 16px;font-family:-apple-system,sans-serif;font-size:0.78rem;color:#445;border-bottom:1px solid #c8d8e8;}
+
+header{background:linear-gradient(135deg,#0d1f33 0%,#1a3a5c 100%);padding:52px 40px 42px;border-bottom:2px solid var(--border);}
+header h1{font-size:clamp(1.4rem,3vw,2rem);font-weight:normal;color:#e8f4ff;line-height:1.3;max-width:820px}
+header .byline{margin-top:12px;font-family:-apple-system,sans-serif;font-size:0.8rem;color:var(--muted)}
+header .byline span{color:var(--accent)}
+
+article{max-width:860px;margin:0 auto;padding:48px 32px}
+h2{font-size:1.25rem;color:var(--accent);margin:44px 0 14px;border-bottom:1px solid var(--border);padding-bottom:8px}
+p{margin-bottom:1.1em;color:#b8cfe0}
+strong{color:var(--text)}
+em{color:var(--orange);font-style:normal}
+
+.fig-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin:28px 0}
+.fig-label{font-family:-apple-system,sans-serif;font-size:0.75rem;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
+
+/* TOOLTIP */
+#tooltip{position:fixed;pointer-events:none;background:#0a131e;border:1px solid var(--accent);border-radius:6px;padding:10px 14px;font-family:-apple-system,sans-serif;font-size:0.78rem;color:var(--text);max-width:260px;z-index:1000;display:none;line-height:1.5}
+#tt-title{font-weight:600;color:var(--accent);margin-bottom:4px}
+#tt-body{color:#b8cfe0}
+
+/* NETWORK SVG */
+#net-svg{width:100%;overflow:visible}
+
+/* HEATMAP */
+.hm-wrap{overflow-x:auto}
+table.heatmap{border-collapse:collapse;font-family:-apple-system,sans-serif;font-size:0.75rem;min-width:540px;width:100%}
+table.heatmap th{padding:6px 10px;color:var(--muted);font-weight:normal;text-align:center}
+table.heatmap th.gene-col{text-align:right;padding-right:12px;color:var(--text);font-weight:600}
+table.heatmap td{padding:5px 8px;text-align:center;border:1px solid #0e1621;cursor:default;transition:outline .1s}
+table.heatmap td:hover{outline:2px solid var(--accent)}
+table.heatmap tr td:first-child{text-align:right;padding-right:12px;font-weight:600;color:var(--text);background:var(--surface);border:none;white-space:nowrap}
+
+.query-bar{margin-top:22px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.query-bar input{background:#0e1b28;border:1px solid var(--border);border-radius:4px;padding:7px 12px;color:var(--text);font-family:-apple-system,sans-serif;font-size:0.82rem;width:160px}
+.query-bar button{background:var(--accent);color:#071220;border:none;border-radius:4px;padding:7px 16px;font-family:-apple-system,sans-serif;font-size:0.82rem;cursor:pointer;font-weight:600}
+.query-bar button:hover{background:#6eb8e4}
+#query-status{font-family:-apple-system,sans-serif;font-size:0.78rem;color:var(--muted)}
+#query-status.error{color:var(--red)}
+
+cite{font-style:italic;color:var(--muted);font-size:0.85em}
+footer{background:#0d2137;color:#8ab4d4;text-align:center;padding:18px 24px;font-family:-apple-system,sans-serif;font-size:0.78rem;margin-top:40px}
+footer a{color:#e8c26a}
+</style>
+</head>
+<body>
+
+<div id="id-banner">Cathy Liu · cathyliu014@gmail.com · personal exploratory project, July 2026</div>
+<div id="tooltip"><div id="tt-title"></div><div id="tt-body"></div></div>
+
+<header>
+  <h1>When One Kinase Falls:<br>TBK1 as the Master Conductor of Neuronal Autophagy in ALS</h1>
+  <p class="byline">Interactive demo · <span>Mordes Lab, UCSF</span> · Data: Smeyers &amp; Mordes, Cell Reports 2025 + Allen Brain Atlas ISH</p>
+</header>
+
+<article>
+
+<p>Amyotrophic lateral sclerosis is defined by one paradox: motor neurons — among the largest, most metabolically active cells in the body — are selectively destroyed, while neighboring cell types survive. One clue lies in the gene <strong>TBK1</strong>. Haploinsufficiency of TBK1 causes familial ALS, and TBK1 variants are found in sporadic cases too. But <em>why</em> does losing half of one kinase kill a motor neuron?</p>
+
+<p>The Mordes lab recently answered this with unusual precision. Using deep phosphoproteomics in iPSC-derived excitatory neurons — quantifying <strong>66,278 phosphopeptides across 8,196 proteins</strong> — they showed that TBK1 doesn't target a single pathway. It phosphorylates a coordinated network: five selective autophagy cargo receptors (SQSTM1/p62, OPTN, NDP52, NBR1, TAX1BP1), two autophagy initiation factors (FIP200, ATG9A), and the late-endosomal GTPase RAB7A. Lose TBK1, and all of these collapse simultaneously.</p>
+
+<h2>Figure 1 — The TBK1 Phosphorylation Network</h2>
+
+<div class="fig-box">
+  <div class="fig-label">Hover nodes for phosphosite and function · Data: Smeyers &amp; Mordes, Cell Reports 2025 (ProteomeXchange PXD068150)</div>
+  <svg id="net-svg" viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg"></svg>
+</div>
+
+<p>The network reveals a striking architecture: TBK1 operates on <strong>three distinct layers of autophagy</strong> simultaneously. At the recognition layer, it phosphorylates all five major cargo receptors — ensuring that misfolded proteins and damaged organelles get flagged. At the initiation layer, TBK1 phosphorylates FIP200 (pS1286) and ATG9A (pS755), the proteins that nucleate the autophagosome membrane. And at the trafficking layer, it phosphorylates RAB7A (pS72) to keep late endosomes moving toward lysosomes. Losing TBK1 is not a partial impairment — it is a <em>simultaneous collapse</em> of recognition, initiation, and delivery.</p>
+
+<h2>Figure 2 — Regional Expression: Why Motor Neurons?</h2>
+
+<p>The phosphoproteomics tells us what TBK1 does. The Allen Mouse Brain Atlas tells us <em>where</em> it matters most. If motor neurons are uniquely vulnerable to TBK1 loss, we would expect TBK1 and its key effectors to be highest in motor-circuit regions — and lowest in regions spared by ALS.</p>
+
+<div class="fig-box">
+  <div class="fig-label">Expression density (Allen ISH) · hover cell for value · live query below</div>
+  <div class="hm-wrap">
+    <table class="heatmap" id="hm-table">
+      <thead>
+        <tr>
+          <th class="gene-col">Gene</th>
+          <th>Hipp</th><th>EC</th><th>PFC</th><th>SSp</th>
+          <th>MOp</th><th>Thal</th><th>Str</th><th>Cereb</th>
+        </tr>
+      </thead>
+      <tbody id="hm-body"></tbody>
+    </table>
+  </div>
+  <div class="query-bar">
+    <input id="gene-input" type="text" placeholder="e.g. Optineurin">
+    <button onclick="queryGene()">Add gene</button>
+    <span id="query-status"></span>
+  </div>
+</div>
+
+<p>The pattern is unambiguous. <strong>Motor cortex (MOp) has the highest TBK1 expression</strong> of any region (0.039), and also the highest ATG9A (0.039) — the two autophagy nodes most co-enriched in motor tissue. Cerebellum, the region largely spared in ALS, has the lowest expression of both (0.009 each). FIP200/Rb1cc1 follows the same gradient: MOp &gt; Hipp &gt; Cereb.</p>
+
+<p>This is not a coincidence of proximity — it is a dependency signature. Motor neurons run TBK1-dependent autophagy at the highest throughput of any region examined. When a TBK1 mutation cuts that flux in half, it is precisely the cells with the highest autophagic demand that cannot compensate. SQSTM1 (p62) is broadly expressed (0.10–0.18 across regions), consistent with its role as a universal cargo receptor; but its phosphorylation at S361/S366 — and therefore its function — depends entirely on TBK1 activity that is highest in MOp.</p>
+
+<p>An open question the Mordes lab is positioned to answer: does the <em>ratio</em> of TBK1 to p62 predict regional vulnerability? MOp has relatively lower p62 (0.16) but very high TBK1 (0.039) — suggesting the cargo receptor is not the bottleneck, but the kinase is. Regions with the same p62 level but lower TBK1 (Str: p62 0.146, TBK1 0.014) may clear cargo through TBK1-independent mechanisms, explaining their sparing.</p>
+
+</article>
+
+<footer>
+  Cathy Liu — cathyliu014@gmail.com | 415-216-3799 · Epilepsy neurostimulation project · <a href="https://arxiv.org/abs/2606.04339">arXiv:2606.04339</a>
+</footer>
+
+<script>
+// ── NETWORK DIAGRAM ──────────────────────────────────────────────────────────
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const svg = document.getElementById('net-svg');
+const W = 760, H = 440;
+const CX = 380, CY = 220;
+
+const NODES = [
+  // center
+  {id:'tbk1', label:'TBK1', x:CX, y:CY, r:34, color:'#4fa3d4', group:'kinase',
+   site:'', func:'Master kinase: haploinsufficiency causes familial ALS/FTD'},
+  // Cargo receptors — left arc
+  {id:'sqstm1', label:'SQSTM1\n(p62)', x:105, y:120, r:22, color:'#e05c5c', group:'cargo',
+   site:'pS361 / pS366', func:'Universal ubiquitin cargo receptor; aggregates in ALS motor neurons'},
+  {id:'optn',  label:'OPTN',  x:75,  y:220, r:22, color:'#e05c5c', group:'cargo',
+   site:'pS177', func:'Optineurin; selective autophagy of mitochondria and bacteria; ALS risk gene'},
+  {id:'ndp52', label:'NDP52\n(CALCOCO2)', x:110, y:330, r:22, color:'#e05c5c', group:'cargo',
+   site:'pS355', func:'Selective autophagy of ubiquitinated cargo; loss increases TDP-43 aggregation'},
+  {id:'nbr1',  label:'NBR1',  x:200, y:390, r:22, color:'#e05c5c', group:'cargo',
+   site:'pS622', func:'Neighbor of BRCA1; cargo receptor for aggresome clearance'},
+  {id:'tax1bp1',label:'TAX1BP1',x:320, y:400, r:22, color:'#e05c5c', group:'cargo',
+   site:'pS593', func:'Cargo receptor for ferritinophagy and mitophagy; co-activator with OPTN'},
+  // Initiation — top
+  {id:'fip200', label:'FIP200\n(RB1CC1)', x:300, y:58, r:22, color:'#4fa3d4', group:'init',
+   site:'pS1286', func:'ULK1 complex scaffold; nucleates phagophore membrane at cargo sites'},
+  {id:'atg9a',  label:'ATG9A',  x:450, y:48, r:22, color:'#4fa3d4', group:'init',
+   site:'pS755', func:'Lipid scramblase; delivers membrane to growing autophagosome'},
+  // Endo-lysosomal — right
+  {id:'rab7a',  label:'RAB7A',  x:655, y:155, r:22, color:'#e8a44a', group:'endo',
+   site:'pS72', func:'Late endosome GTPase; directs autophagosome–lysosome fusion'},
+  {id:'ncoa7',  label:'NCOA7',  x:668, y:285, r:22, color:'#e8a44a', group:'endo',
+   site:'pS441', func:'V-ATPase regulator; acidification of lysosomal lumen'},
+  // Adapters — bottom right
+  {id:'azi2',   label:'AZI2\n(NAP1)', x:555, y:385, r:20, color:'#9b7fd4', group:'adapt',
+   site:'', func:'TBK1 adaptor; links TBK1 to the NF-κB / IRF3 axis and autophagy'},
+];
+
+const EDGES = [
+  ['tbk1','sqstm1'],['tbk1','optn'],['tbk1','ndp52'],['tbk1','nbr1'],['tbk1','tax1bp1'],
+  ['tbk1','fip200'],['tbk1','atg9a'],
+  ['tbk1','rab7a'],['tbk1','ncoa7'],
+  ['tbk1','azi2'],
+];
+
+const GROUP_LABELS = [
+  {x:60,  y:72,  text:'Cargo receptors', color:'#e05c5c'},
+  {x:252, y:22,  text:'Initiation', color:'#4fa3d4'},
+  {x:640, y:115, text:'Endo-lysosomal', color:'#e8a44a'},
+  {x:545, y:425, text:'Adaptors', color:'#9b7fd4'},
+];
+
+function el(tag, attrs={}) {
+  const e = document.createElementNS(SVG_NS, tag);
+  for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+  return e;
+}
+
+// Defs
+const defs = el('defs');
+const glow = el('filter',{id:'glow','x':'-30%','y':'-30%','width':'160%','height':'160%'});
+const fe = el('feGaussianBlur',{in:'SourceGraphic',stdDeviation:'4',result:'blur'});
+const feMerge = el('feMerge');
+feMerge.appendChild(el('feMergeNode',{in:'blur'}));
+feMerge.appendChild(el('feMergeNode',{in:'SourceGraphic'}));
+glow.appendChild(fe); glow.appendChild(feMerge);
+defs.appendChild(glow);
+svg.appendChild(defs);
+
+const nodeMap = Object.fromEntries(NODES.map(n=>[n.id,n]));
+
+// Edges
+for (const [a,b] of EDGES) {
+  const na=nodeMap[a], nb=nodeMap[b];
+  const line = el('line',{x1:na.x,y1:na.y,x2:nb.x,y2:nb.y,
+    stroke:'#1e3a58',strokeWidth:'1.5','stroke-dasharray':'4 3',opacity:'.7'});
+  svg.appendChild(line);
+}
+
+// Group labels
+for (const g of GROUP_LABELS) {
+  const t = el('text',{x:g.x,y:g.y,fill:g.color,
+    'font-family':'-apple-system,sans-serif','font-size':'11',opacity:'.85'});
+  t.textContent=g.text;
+  svg.appendChild(t);
+}
+
+// Nodes
+const tip = document.getElementById('tooltip');
+const ttTitle = document.getElementById('tt-title');
+const ttBody = document.getElementById('tt-body');
+
+for (const n of NODES) {
+  const g = el('g',{cursor:'pointer'});
+
+  const circle = el('circle',{cx:n.x,cy:n.y,r:n.r,fill:n.color+'22',
+    stroke:n.color,'stroke-width':'1.8'});
+  g.appendChild(circle);
+
+  // Label (multi-line)
+  const lines = n.label.split('\n');
+  const yStart = n.y - (lines.length-1)*7;
+  for (let i=0;i<lines.length;i++) {
+    const t = el('text',{x:n.x,y:yStart+i*13,'text-anchor':'middle',
+      fill:n.color,'font-family':'-apple-system,sans-serif',
+      'font-size': n.id==='tbk1'?'13':'10','font-weight':'600'});
+    t.textContent=lines[i];
+    g.appendChild(t);
+  }
+
+  g.addEventListener('mousemove',e=>{
+    ttTitle.textContent = n.label.replace('\n',' ') + (n.site ? ` — ${n.site}` : '');
+    ttBody.textContent = n.func;
+    tip.style.display='block';
+    tip.style.left=(e.clientX+14)+'px';
+    tip.style.top=(e.clientY-10)+'px';
+  });
+  g.addEventListener('mouseleave',()=>{ tip.style.display='none'; });
+  svg.appendChild(g);
+}
+
+// ── HEATMAP ──────────────────────────────────────────────────────────────────
+const REGIONS = ['Hipp','EC','PFC','SSp','MOp','Thal','Str','Cereb'];
+
+const DATA = {
+  'Tbk1':   {Hipp:0.0236, EC:0.0123, PFC:0.047,  SSp:0.026,  MOp:0.0393, Thal:0.0316, Str:0.0137, Cereb:0.0089},
+  'Sqstm1': {Hipp:0.1475, EC:0.1838, PFC:0.0964, SSp:0.1774, MOp:0.1618, Thal:0.1555, Str:0.146,  Cereb:0.0769},
+  'Optn':   {Hipp:0.0026, EC:0.0055, PFC:0.0075, SSp:0.0017, MOp:0.0029, Thal:0.0009, Str:0.0009, Cereb:0.0063},
+  'Atg9a':  {Hipp:0.0143, EC:0.0171, PFC:0.0216, SSp:0.0265, MOp:0.0386, Thal:0.0133, Str:0.0075, Cereb:0.0087},
+  'Rb1cc1': {Hipp:0.0062, EC:0.0075, PFC:0.0059, SSp:0.0102, MOp:0.0119, Thal:0.007,  Str:0.0041, Cereb:0.0016},
+};
+
+function valToColor(v, min, max) {
+  if (v === null) return '#111';
+  const t = (v - min) / (max - min || 1);
+  const r = Math.round(13  + t*(80 - 13));
+  const g = Math.round(32  + t*(163- 32));
+  const b = Math.round(44  + t*(212- 44));
+  return `rgb(${r},${g},${b})`;
+}
+
+function renderRow(gene, rowData, isLive=false) {
+  const vals = REGIONS.map(r => rowData[r] ?? null);
+  const defined = vals.filter(v=>v!==null);
+  const min = Math.min(...defined), max = Math.max(...defined);
+
+  const tr = document.createElement('tr');
+  const th = document.createElement('td');
+  th.textContent = gene + (isLive ? ' ✦' : '');
+  if (isLive) th.style.color = '#e8c26a';
+  tr.appendChild(th);
+
+  vals.forEach((v, i) => {
+    const td = document.createElement('td');
+    td.style.background = valToColor(v, min, max);
+    td.style.color = v !== null ? '#e8f4ff' : '#333';
+    td.textContent = v !== null ? v.toFixed(4) : '—';
+    td.title = `${gene} · ${REGIONS[i]}: ${v !== null ? v : 'no data'}`;
+    td.addEventListener('mousemove', e => {
+      ttTitle.textContent = `${gene} — ${REGIONS[i]}`;
+      ttBody.textContent = `Expression density: ${v !== null ? v.toFixed(4) : 'no data'}`;
+      tip.style.display='block';
+      tip.style.left=(e.clientX+14)+'px'; tip.style.top=(e.clientY-10)+'px';
+    });
+    td.addEventListener('mouseleave',()=>tip.style.display='none');
+    tr.appendChild(td);
+  });
+  return tr;
+}
+
+const tbody = document.getElementById('hm-body');
+for (const [gene, rowData] of Object.entries(DATA)) {
+  tbody.appendChild(renderRow(gene, rowData));
+}
+
+// Live Allen query
+async function queryGene() {
+  const input = document.getElementById('gene-input').value.trim();
+  if (!input) return;
+  const status = document.getElementById('query-status');
+  status.className=''; status.textContent='Querying Allen Brain Atlas…';
+  try {
+    const gene = input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
+    const STRUCT_IDS = {Hipp:1080,EC:909,PFC:184,SSp:453,MOp:985,Thal:549,Str:477,Cereb:512};
+    let expId = null;
+    for (const plane of ['coronal','sagittal']) {
+      const r = await fetch(`https://api.brain-map.org/api/v2/data/query.json?criteria=model::SectionDataSet,rma::criteria,[failed$eq'false'],products[abbreviation$eq'Mouse'],genes[acronym$eq'${gene}'],plane_of_section[name$eq'${plane}']&num_rows=1`);
+      const d = await r.json();
+      if (d.msg.length) { expId=d.msg[0].id; break; }
+    }
+    if (!expId) throw new Error(`No ISH experiment found for "${gene}"`);
+    const rowData = {};
+    await Promise.all(REGIONS.map(async reg => {
+      const sid = STRUCT_IDS[reg];
+      const r = await fetch(`https://api.brain-map.org/api/v2/data/query.json?criteria=model::StructureUnionize,rma::criteria,section_data_set[id$eq${expId}],structure[id$eq${sid}]&num_rows=1`);
+      const d = await r.json();
+      rowData[reg] = d.msg.length ? d.msg[0].expression_density : null;
+    }));
+    tbody.appendChild(renderRow(gene, rowData, true));
+    status.textContent=`Loaded ${gene} (experiment ${expId}) as new row.`;
+    document.getElementById('gene-input').value='';
+  } catch(err) {
+    status.className='error'; status.textContent=`Error: ${err.message}`;
+  }
+}
+document.getElementById('gene-input').addEventListener('keydown',e=>{ if(e.key==='Enter') queryGene(); });
+</script>
+</body>
+</html>
